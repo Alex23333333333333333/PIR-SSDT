@@ -55,6 +55,9 @@
     <Compile Include="Book.cs">
       <DependentUpon>Library.tt</DependentUpon>
     </Compile>
+    <Compile Include="BookDetail.cs">
+      <DependentUpon>Library.tt</DependentUpon>
+    </Compile>
     <Compile Include="Library.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
