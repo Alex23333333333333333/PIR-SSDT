@@ -1,5 +1,6 @@
 ﻿CREATE TABLE [dbo].[Books]
 (
 	[Id] INT NOT NULL PRIMARY KEY,
-    [Name] NCHAR(100) NOT NULL
+    [Name] NCHAR(100) NOT NULL, 
+    [IsActive] BIT NULL
 )
