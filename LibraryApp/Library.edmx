@@ -17,30 +17,41 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nchar" MaxLength="100" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Book_BookDetails">
+          <End Role="Books" Type="Self.Books" Multiplicity="1" />
+          <End Role="BookDetails" Type="Self.BookDetails" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Books">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BookDetails">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="LibraryModelStoreContainer">
           <EntitySet Name="BookDetails" EntityType="Self.BookDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Books" EntityType="Self.Books" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Book_BookDetails" Association="Self.FK_Book_BookDetails">
+            <End Role="Books" EntitySet="Books" />
+            <End Role="BookDetails" EntitySet="BookDetails" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LibraryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Book">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Name" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="true" Unicode="true" Nullable="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-        </EntityType>
         <EntityContainer Name="LibraryEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Books" EntityType="Self.Book" />
           <EntitySet Name="BookDetails" EntityType="LibraryModel.BookDetail" />
+          <EntitySet Name="Books" EntityType="LibraryModel.Book" />
+          <AssociationSet Name="FK_Book_BookDetails" Association="LibraryModel.FK_Book_BookDetails">
+            <End Role="Book" EntitySet="Books" />
+            <End Role="BookDetail" EntitySet="BookDetails" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="BookDetail">
           <Key>
@@ -49,27 +60,49 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="true" Unicode="true" />
           <Property Name="NumberOfPages" Type="Int32" />
+          <NavigationProperty Name="Book" Relationship="LibraryModel.FK_Book_BookDetails" FromRole="BookDetail" ToRole="Book" />
         </EntityType>
+        <EntityType Name="Book">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="BookDetail" Relationship="LibraryModel.FK_Book_BookDetails" FromRole="Book" ToRole="BookDetail" />
+        </EntityType>
+        <Association Name="FK_Book_BookDetails">
+          <End Type="LibraryModel.Book" Role="Book" Multiplicity="1" />
+          <End Type="LibraryModel.BookDetail" Role="BookDetail" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Book">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="BookDetail">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="LibraryModelStoreContainer" CdmEntityContainer="LibraryEntities">
-          <EntitySetMapping Name="Books">
-            <EntityTypeMapping TypeName="LibraryModel.Book">
-              <MappingFragment StoreEntitySet="Books">
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="BookDetails">
             <EntityTypeMapping TypeName="LibraryModel.BookDetail">
               <MappingFragment StoreEntitySet="BookDetails">
                 <ScalarProperty Name="NumberOfPages" ColumnName="NumberOfPages" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Books">
+            <EntityTypeMapping TypeName="LibraryModel.Book">
+              <MappingFragment StoreEntitySet="Books">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
