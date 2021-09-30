@@ -20,7 +20,27 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nchar" MaxLength="100" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Publisher_id" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Publishers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Books__Publisher__48CFD27E">
+          <End Role="Publishers" Type="Self.Publishers" Multiplicity="1" />
+          <End Role="Books" Type="Self.Books" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Publishers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Books">
+              <PropertyRef Name="Publisher_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Book_BookDetails">
           <End Role="Books" Type="Self.Books" Multiplicity="1" />
           <End Role="BookDetails" Type="Self.BookDetails" Multiplicity="0..1" />
@@ -36,6 +56,11 @@
         <EntityContainer Name="LibraryModelStoreContainer">
           <EntitySet Name="BookDetails" EntityType="Self.BookDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Books" EntityType="Self.Books" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Publishers" EntityType="Self.Publishers" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Books__Publisher__48CFD27E" Association="Self.FK__Books__Publisher__48CFD27E">
+            <End Role="Publishers" EntitySet="Publishers" />
+            <End Role="Books" EntitySet="Books" />
+          </AssociationSet>
           <AssociationSet Name="FK_Book_BookDetails" Association="Self.FK_Book_BookDetails">
             <End Role="Books" EntitySet="Books" />
             <End Role="BookDetails" EntitySet="BookDetails" />
@@ -51,6 +76,11 @@
           <AssociationSet Name="FK_Book_BookDetails" Association="LibraryModel.FK_Book_BookDetails">
             <End Role="Book" EntitySet="Books" />
             <End Role="BookDetail" EntitySet="BookDetails" />
+          </AssociationSet>
+          <EntitySet Name="Publishers" EntityType="LibraryModel.Publisher" />
+          <AssociationSet Name="FK__Books__Publisher__48CFD27E" Association="LibraryModel.FK__Books__Publisher__48CFD27E">
+            <End Role="Publisher" EntitySet="Publishers" />
+            <End Role="Book" EntitySet="Books" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="BookDetail">
@@ -70,6 +100,8 @@
           <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="true" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="BookDetail" Relationship="LibraryModel.FK_Book_BookDetails" FromRole="Book" ToRole="BookDetail" />
+          <Property Name="Publisher_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Publisher" Relationship="LibraryModel.FK__Books__Publisher__48CFD27E" FromRole="Book" ToRole="Publisher" />
         </EntityType>
         <Association Name="FK_Book_BookDetails">
           <End Type="LibraryModel.Book" Role="Book" Multiplicity="1" />
@@ -80,6 +112,26 @@
             </Principal>
             <Dependent Role="BookDetail">
               <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Publisher">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Books" Relationship="LibraryModel.FK__Books__Publisher__48CFD27E" FromRole="Publisher" ToRole="Book" />
+        </EntityType>
+        <Association Name="FK__Books__Publisher__48CFD27E">
+          <End Type="LibraryModel.Publisher" Role="Publisher" Multiplicity="1" />
+          <End Type="LibraryModel.Book" Role="Book" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Publisher">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Book">
+              <PropertyRef Name="Publisher_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -101,7 +153,16 @@
           <EntitySetMapping Name="Books">
             <EntityTypeMapping TypeName="LibraryModel.Book">
               <MappingFragment StoreEntitySet="Books">
+                <ScalarProperty Name="Publisher_id" ColumnName="Publisher_id" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Publishers">
+            <EntityTypeMapping TypeName="LibraryModel.Publisher">
+              <MappingFragment StoreEntitySet="Publishers">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
