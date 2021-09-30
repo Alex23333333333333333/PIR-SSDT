@@ -5,8 +5,9 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="93ced0d31ad542a5bf56d3408d49b760" Name="Diagram1">
-        <EntityTypeShape EntityType="LibraryModel.Book" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LibraryModel.BookDetail" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="LibraryModel.BookDetail" Width="1.5" PointX="3" PointY="4.125" />
+        <EntityTypeShape EntityType="LibraryModel.Book" Width="1.5" PointX="0.75" PointY="4.125" />
+        <AssociationConnector Association="LibraryModel.FK_Book_BookDetails" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
