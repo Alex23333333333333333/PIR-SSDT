@@ -12,22 +12,20 @@ namespace LibraryApp
     using System;
     using System.Collections.Generic;
     
-    public partial class Book
+    public partial class Author
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Book()
+        public Author()
         {
-            this.Authors = new HashSet<Author>();
+            this.Books = new HashSet<Book>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public bool IsActive { get; set; }
-        public int Publisher_id { get; set; }
+        public string Surname { get; set; }
+        public string Patronymic { get; set; }
     
-        public virtual BookDetail BookDetail { get; set; }
-        public virtual Publisher Publisher { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Author> Authors { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

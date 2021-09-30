@@ -5,6 +5,25 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="LibraryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Library.dbo.AuthorBook' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AuthorBook">
+          <Key>
+            <PropertyRef Name="BookId" />
+            <PropertyRef Name="AuthorId" />
+          </Key>
+          <Property Name="BookId" Type="int" Nullable="false" />
+          <Property Name="AuthorId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Authors">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="Surname" Type="nchar" MaxLength="50" Nullable="false" />
+          <Property Name="Patronymic" Type="nchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="BookDetails">
           <Key>
             <PropertyRef Name="Id" />
@@ -29,6 +48,30 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="nchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <Association Name="FK__AuthorBoo__Autho__4D94879B">
+          <End Role="Authors" Type="Self.Authors" Multiplicity="1" />
+          <End Role="AuthorBook" Type="Self.AuthorBook" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Authors">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AuthorBook">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AuthorBoo__BookI__4CA06362">
+          <End Role="Books" Type="Self.Books" Multiplicity="1" />
+          <End Role="AuthorBook" Type="Self.AuthorBook" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Books">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AuthorBook">
+              <PropertyRef Name="BookId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Books__Publisher__48CFD27E">
           <End Role="Publishers" Type="Self.Publishers" Multiplicity="1" />
           <End Role="Books" Type="Self.Books" Multiplicity="*" />
@@ -54,9 +97,24 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="LibraryModelStoreContainer">
+          <EntitySet Name="Authors" EntityType="Self.Authors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BookDetails" EntityType="Self.BookDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Books" EntityType="Self.Books" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Publishers" EntityType="Self.Publishers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AuthorBook" EntityType="Self.AuthorBook" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AuthorBook].[BookId] AS [BookId], 
+    [AuthorBook].[AuthorId] AS [AuthorId]
+    FROM [dbo].[AuthorBook] AS [AuthorBook]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__AuthorBoo__Autho__4D94879B" Association="Self.FK__AuthorBoo__Autho__4D94879B">
+            <End Role="Authors" EntitySet="Authors" />
+            <End Role="AuthorBook" EntitySet="AuthorBook" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AuthorBoo__BookI__4CA06362" Association="Self.FK__AuthorBoo__BookI__4CA06362">
+            <End Role="Books" EntitySet="Books" />
+            <End Role="AuthorBook" EntitySet="AuthorBook" />
+          </AssociationSet>
           <AssociationSet Name="FK__Books__Publisher__48CFD27E" Association="Self.FK__Books__Publisher__48CFD27E">
             <End Role="Publishers" EntitySet="Publishers" />
             <End Role="Books" EntitySet="Books" />
@@ -82,6 +140,11 @@
             <End Role="Publisher" EntitySet="Publishers" />
             <End Role="Book" EntitySet="Books" />
           </AssociationSet>
+          <EntitySet Name="Authors" EntityType="LibraryModel.Author" />
+          <AssociationSet Name="AuthorBook" Association="LibraryModel.AuthorBook">
+            <End Role="Author" EntitySet="Authors" />
+            <End Role="Book" EntitySet="Books" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="BookDetail">
           <Key>
@@ -102,6 +165,7 @@
           <NavigationProperty Name="BookDetail" Relationship="LibraryModel.FK_Book_BookDetails" FromRole="Book" ToRole="BookDetail" />
           <Property Name="Publisher_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Publisher" Relationship="LibraryModel.FK__Books__Publisher__48CFD27E" FromRole="Book" ToRole="Publisher" />
+          <NavigationProperty Name="Authors" Relationship="LibraryModel.AuthorBook" FromRole="Book" ToRole="Author" />
         </EntityType>
         <Association Name="FK_Book_BookDetails">
           <End Type="LibraryModel.Book" Role="Book" Multiplicity="1" />
@@ -134,6 +198,20 @@
               <PropertyRef Name="Publisher_id" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Author">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Surname" Type="String" Nullable="false" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Patronymic" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Books" Relationship="LibraryModel.AuthorBook" FromRole="Author" ToRole="Book" />
+        </EntityType>
+        <Association Name="AuthorBook">
+          <End Type="LibraryModel.Author" Role="Author" Multiplicity="*" />
+          <End Type="LibraryModel.Book" Role="Book" Multiplicity="*" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -168,6 +246,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Authors">
+            <EntityTypeMapping TypeName="LibraryModel.Author">
+              <MappingFragment StoreEntitySet="Authors">
+                <ScalarProperty Name="Patronymic" ColumnName="Patronymic" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="AuthorBook" TypeName="LibraryModel.AuthorBook" StoreEntitySet="AuthorBook">
+            <EndProperty Name="Book">
+              <ScalarProperty Name="Id" ColumnName="BookId" />
+            </EndProperty>
+            <EndProperty Name="Author">
+              <ScalarProperty Name="Id" ColumnName="AuthorId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
