@@ -48,6 +48,17 @@ warning 6002: The table/view 'Library.dbo.AuthorBook' does not have a primary ke
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="nchar" MaxLength="100" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Library.dbo.vBook' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vBook">
+          <Key>
+            <PropertyRef Name="Book" />
+          </Key>
+          <Property Name="Book" Type="nchar" MaxLength="100" Nullable="false" />
+          <Property Name="Authors" Type="nvarchar" MaxLength="4000" />
+          <Property Name="Publisher" Type="nchar" MaxLength="100" />
+          <Property Name="Description" Type="nchar" MaxLength="500" />
+        </EntityType>
         <Association Name="FK__AuthorBoo__Autho__4D94879B">
           <End Role="Authors" Type="Self.Authors" Multiplicity="1" />
           <End Role="AuthorBook" Type="Self.AuthorBook" Multiplicity="*" />
@@ -107,6 +118,14 @@ warning 6002: The table/view 'Library.dbo.AuthorBook' does not have a primary ke
     [AuthorBook].[AuthorId] AS [AuthorId]
     FROM [dbo].[AuthorBook] AS [AuthorBook]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vBook" EntityType="Self.vBook" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vBook].[Book] AS [Book], 
+    [vBook].[Authors] AS [Authors], 
+    [vBook].[Publisher] AS [Publisher], 
+    [vBook].[Description] AS [Description]
+    FROM [dbo].[vBook] AS [vBook]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK__AuthorBoo__Autho__4D94879B" Association="Self.FK__AuthorBoo__Autho__4D94879B">
             <End Role="Authors" EntitySet="Authors" />
             <End Role="AuthorBook" EntitySet="AuthorBook" />
@@ -145,6 +164,7 @@ warning 6002: The table/view 'Library.dbo.AuthorBook' does not have a primary ke
             <End Role="Author" EntitySet="Authors" />
             <End Role="Book" EntitySet="Books" />
           </AssociationSet>
+          <EntitySet Name="vBooks" EntityType="LibraryModel.vBook" />
         </EntityContainer>
         <EntityType Name="BookDetail">
           <Key>
@@ -213,6 +233,15 @@ warning 6002: The table/view 'Library.dbo.AuthorBook' does not have a primary ke
           <End Type="LibraryModel.Author" Role="Author" Multiplicity="*" />
           <End Type="LibraryModel.Book" Role="Book" Multiplicity="*" />
         </Association>
+        <EntityType Name="vBook">
+          <Key>
+            <PropertyRef Name="Book" />
+          </Key>
+          <Property Name="Book" Type="String" Nullable="false" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="Authors" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="Publisher" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="true" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -264,6 +293,16 @@ warning 6002: The table/view 'Library.dbo.AuthorBook' does not have a primary ke
               <ScalarProperty Name="Id" ColumnName="AuthorId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="vBooks">
+            <EntityTypeMapping TypeName="LibraryModel.vBook">
+              <MappingFragment StoreEntitySet="vBook">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Publisher" ColumnName="Publisher" />
+                <ScalarProperty Name="Authors" ColumnName="Authors" />
+                <ScalarProperty Name="Book" ColumnName="Book" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

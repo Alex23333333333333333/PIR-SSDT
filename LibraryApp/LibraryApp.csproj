@@ -81,6 +81,9 @@
     <Compile Include="Publisher.cs">
       <DependentUpon>Library.tt</DependentUpon>
     </Compile>
+    <Compile Include="vBook.cs">
+      <DependentUpon>Library.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

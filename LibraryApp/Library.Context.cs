@@ -29,5 +29,6 @@ namespace LibraryApp
         public virtual DbSet<Book> Books { get; set; }
         public virtual DbSet<Publisher> Publishers { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
+        public virtual DbSet<vBook> vBooks { get; set; }
     }
 }
