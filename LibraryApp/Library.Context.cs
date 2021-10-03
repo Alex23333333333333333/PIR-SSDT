@@ -12,6 +12,8 @@ namespace LibraryApp
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class LibraryEntities : DbContext
     {
@@ -30,5 +32,14 @@ namespace LibraryApp
         public virtual DbSet<Publisher> Publishers { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<vBook> vBooks { get; set; }
+    
+        public virtual ObjectResult<string> AuthorBooks(Nullable<int> authorId)
+        {
+            var authorIdParameter = authorId.HasValue ?
+                new ObjectParameter("authorId", authorId) :
+                new ObjectParameter("authorId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("AuthorBooks", authorIdParameter);
+        }
     }
 }

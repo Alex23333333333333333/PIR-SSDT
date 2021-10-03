@@ -107,6 +107,9 @@ warning 6002: The table/view 'Library.dbo.vBook' does not have a primary key def
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="AuthorBooks" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="authorId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="LibraryModelStoreContainer">
           <EntitySet Name="Authors" EntityType="Self.Authors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BookDetails" EntityType="Self.BookDetails" Schema="dbo" store:Type="Tables" />
@@ -165,6 +168,9 @@ warning 6002: The table/view 'Library.dbo.vBook' does not have a primary key def
             <End Role="Book" EntitySet="Books" />
           </AssociationSet>
           <EntitySet Name="vBooks" EntityType="LibraryModel.vBook" />
+          <FunctionImport Name="AuthorBooks" ReturnType="Collection(String)">
+            <Parameter Name="authorId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="BookDetail">
           <Key>
@@ -303,6 +309,7 @@ warning 6002: The table/view 'Library.dbo.vBook' does not have a primary key def
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="AuthorBooks" FunctionName="LibraryModel.Store.AuthorBooks" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
