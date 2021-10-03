@@ -60,5 +60,13 @@
   <ItemGroup>
     <Build Include="Books.sql" />
     <Build Include="BookDetails.sql" />
+    <Build Include="Publishers.sql" />
+    <Build Include="Authors.sql" />
+    <Build Include="AuthorBook.sql" />
+    <Build Include="vBook.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Library.publish.xml" />
+    <None Include="Library_1.publish.xml" />
   </ItemGroup>
 </Project>
