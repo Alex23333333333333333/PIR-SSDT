@@ -64,6 +64,8 @@
     <Build Include="Authors.sql" />
     <Build Include="AuthorBook.sql" />
     <Build Include="vBook.sql" />
+    <Build Include="AuthorBooks.sql" />
+    <Build Include="CountOfBooks.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Library.publish.xml" />
